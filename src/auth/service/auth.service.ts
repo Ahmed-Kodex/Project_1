@@ -4,6 +4,7 @@ import {
   BadRequestException,
   InternalServerErrorException,
   Logger,
+  ForbiddenException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -53,44 +54,14 @@ export class AuthService {
     };
   }
 
-  // async verifyOtpAndLogin(
-  //   username: string,
-  //   code: string,
-  // ): Promise<{ access_token: string; user: { id: number; username: string } }> {
-  //   if (!username || !code)
-  //     throw new BadRequestException(MESSAGES.USER_CODE_REQUIRED);
-  //   const user = await this.usersService.findByUsername(username);
-  //   if (!user) {
-  //     throw new UnauthorizedException(MESSAGES.INVALID_USERNAME);
-  //   }
-  //   const valid = await this.otpService.validateOtp(user.id, code);
-  //   if (!valid) {
-  //     throw new UnauthorizedException(MESSAGES.INVALID_OTP);
-  //   }
-  //   try {
-  //     await this.usersService.markEmailVerified(user.id);
-  //   } catch (err) {
-  //     this.logger.error(MESSAGES.FAILED_VERFICATION_MARK, err as any);
-  //     throw new InternalServerErrorException(MESSAGES.FAILED_EMAIL_VERFICATION);
-  //   }
-  //   const payload = { sub: user.id, username: user.username };
-  //   const token = this.jwtService.sign(payload);
-  //   return {
-  //     access_token: token,
-  //     user: { id: user.id, username: user.username },
-  //   };
-  // }
-
   async verifyOtpAndLogin(
+    email: string,
     code: string,
-  ): Promise<{ access_token: string; user: { id: number; username: string } }> {
-    if (!code) throw new BadRequestException(MESSAGES.OTP_CODE_REQUIRED);
-
-    const otpRecord = await this.otpService.findByCode(code);
-    if (!otpRecord) {
-      throw new UnauthorizedException(MESSAGES.INVALID_OTP);
+  ): Promise<{ access_token: string; verified: any }> {
+    if (!email || !code) {
+      throw new BadRequestException(MESSAGES.EMAIL_CODE_REQUIRED);
     }
-    const user = await this.usersService.findById(otpRecord.userId);
+    const user = await this.usersService.findByEmail(email);
     if (!user) {
       throw new UnauthorizedException(MESSAGES.USER_NOT_FOUND);
     }
@@ -98,22 +69,16 @@ export class AuthService {
     if (!valid) {
       throw new UnauthorizedException(MESSAGES.INVALID_OTP);
     }
-    try {
-      await this.usersService.markEmailVerified(user.id);
-    } catch (err) {
-      this.logger.error(MESSAGES.FAILED_VERFICATION_MARK, err);
-      throw new InternalServerErrorException(
-        MESSAGES.FAILED_VERFICATION_UPDATE,
-      );
+    await this.usersService.markEmailVerified(user.id);
+    const updatedUser = await this.usersService.findById(user.id);
+    if (!updatedUser) {
+      throw new ForbiddenException(MESSAGES.UPDATE_ERROR);
     }
-
-    const payload = { sub: user.id, username: user.username };
+    const payload = { sub: updatedUser.id, username: updatedUser.username };
     const token = this.jwtService.sign(payload);
-    this.lastVerifiedUserId = user.id;
-
     return {
       access_token: token,
-      user: user,
+      verified: updatedUser.isEmailVerified,
     };
   }
 
@@ -125,57 +90,72 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException(MESSAGES.ACCOUNT_NOT_FOUND);
     }
+    if (!user.isEmailVerified) {
+      throw new UnauthorizedException(MESSAGES.EMAIL_NOT_VERIFIED);
+    }
     const matched = await bcrypt.compare(password, user.password);
     if (!matched) {
       throw new UnauthorizedException(MESSAGES.INVALID_PASSWORD);
     }
     const payload = { sub: user.id, username: user.username };
     const access_token = this.jwtService.sign(payload);
+
     return {
       access_token,
       user: user,
     };
   }
 
-  async forgotPassword(email: string) {
+  // async forgotPassword(email: string) {
+  //   const user = await this.usersService.findByEmail(email);
+  //   if (!user) {
+  //     throw new BadRequestException(MESSAGES.EMAIL_NOT_FOUND);
+  //   }
+  //   await this.usersService.markEmailUnverified(user.id);
+  //   const tempPassword = Math.random().toString(36).slice(2) + Date.now();
+  //   await this.usersService.updatePassword(user.id, tempPassword);
+  //   const otp = await this.otpService.createOtpForUser(user.id, 10);
+  //   await this.mailService.sendOtp(user.email, otp.code);
+  //   return { message: MESSAGES.OTP_SENT, otp: otp.code };
+  // }
+
+  async resetPassword(
+    email: string,
+    newPassword: string,
+    confirmPassword: string,
+  ) {
     const user = await this.usersService.findByEmail(email);
     if (!user) {
-      throw new BadRequestException(MESSAGES.EMAIL_NOT_FOUND);
+      throw new BadRequestException(MESSAGES.USER_NOT_FOUND);
     }
-    const otp = await this.otpService.createOtpForUser(user.id, 10);
-    await this.mailService.sendOtp(user.email, otp.code);
-    return { message: MESSAGES.OTP_SENT, otp: otp.code };
-  }
-
-  async resetPassword(newPassword: string, confirmPassword: string) {
-    if (!this.lastVerifiedUserId) {
+    if (!user.isEmailVerified) {
       throw new UnauthorizedException(MESSAGES.OTP_VERIFICATION_REQUIRED);
     }
     if (newPassword !== confirmPassword) {
       throw new BadRequestException(MESSAGES.PASSWORD_MISMATCH);
     }
-    const user = await this.usersService.findById(this.lastVerifiedUserId);
-    if (!user) {
-      throw new BadRequestException(MESSAGES.USER_NOT_FOUND);
-    }
     await this.usersService.updatePassword(user.id, newPassword);
-    this.lastVerifiedUserId = null;
+    // Optionally reset verification after password reset
+    // await this.usersService.markEmailUnverified(user.id);
     return { message: MESSAGES.PASSWORD_CHANGED };
   }
 
   // for Resend OTP if some mistake
-
-  async resendOtp(email: string): Promise<{ message: string }> {
+  async resendOtp(email: string): Promise<{ message: string; otp: string }> {
     const user = await this.usersService.findByEmail(email);
-    if (!user) throw new BadRequestException('User not found');
+    if (!user) throw new BadRequestException(MESSAGES.USER_NOT_FOUND);
+    await this.usersService.markEmailUnverified(user.id);
     const minutes = Number(process.env.OTP_EXPIRES_MINUTES || 10);
     const otp = await this.otpService.createOtpForUser(user.id, minutes);
     try {
       await this.mailService.sendOtp(user.email, otp.code);
     } catch (err) {
-      this.logger.error('Failed to resend OTP', err as any);
-      throw new InternalServerErrorException('Failed to send OTP');
+      this.logger.error(MESSAGES.OTP_FAILED, err as any);
+      throw new InternalServerErrorException(MESSAGES.OTP_FAILED);
     }
-    return { message: 'OTP resent to email' };
+    return {
+      message: MESSAGES.OTP_RESENT,
+      otp: otp.code,
+    };
   }
 }

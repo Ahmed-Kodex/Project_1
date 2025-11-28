@@ -1,11 +1,13 @@
 export const MESSAGES = {
   OTP_SENT: 'An OTP has been sent to your email.',
+  OTP_RESENT: 'An OTP has been Resent to your email.',
   OTP_FAILED: 'Failed to send OTP. Please try again.',
   CREATE_USER_FAILED: 'Unable to create user account.',
   FIELDS_REQUIRED: 'All required fields must be filled.',
   PASSWORD_MISMATCH: 'Passwords do not match.',
   USER_NOT_CREATED: 'User account could not be created.',
   USER_CODE_REQUIRED: 'Username and verification code are required.',
+  EMAIL_CODE_REQUIRED: 'Email and OTP code are required',
   OTP_CODE_REQUIRED: 'OTP code is required.',
   OTP_VERIFICATION_REQUIRED: 'OTP verification is required.',
   USER_PASSWORD_REQUIRED: 'Username and password are required.',
@@ -19,5 +21,7 @@ export const MESSAGES = {
   ALREADY_IN_USE: 'Username or email is already in use.',
   USER_NOT_FOUND: 'User not found.',
   EMAIL_NOT_FOUND: 'No account found with this email address.',
-  PASSWORD_CHANGED: 'Password has been changed successfully.',
+  EMAIL_NOT_VERIFIED: 'Your email is not verified.',
+  PASSWORD_CHANGED: 'Password updated successfully.',
+  UPDATE_ERROR: 'Something went wrong. User not found after update.',
 };

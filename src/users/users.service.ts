@@ -15,7 +15,7 @@ export class UsersService {
     @InjectRepository(User)
     private usersRepository: Repository<User>,
   ) {}
- 
+
   // TO CALL ALL USERS FROM DB
   async findAll() {
     const users = await this.usersRepository.find();
@@ -36,7 +36,7 @@ export class UsersService {
       email,
       password: hashed,
     });
-    return this.usersRepository.save(user); 
+    return this.usersRepository.save(user);
   }
   async findByUsername(username: string) {
     return this.usersRepository.findOne({ where: { username } });
@@ -50,6 +50,9 @@ export class UsersService {
   }
   async findById(id: number) {
     return this.usersRepository.findOne({ where: { id } });
+  }
+  async markEmailUnverified(userId: number) {
+    await this.usersRepository.update(userId, { isEmailVerified: false });
   }
   async markEmailVerified(userId: number) {
     const user = await this.findById(userId);

@@ -11,7 +11,7 @@ export class OtpService {
   ) {}
 
   async createOtpForUser(userId: number, minutes = 10) {
-    const code = Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit
+    const code = Math.floor(1000 + Math.random() * 9000).toString(); // 6-digit
     const expiresAt = new Date(Date.now() + minutes * 60 * 1000);
     const otp = this.otpRepo.create({ code, userId, expiresAt });
     return this.otpRepo.save(otp);

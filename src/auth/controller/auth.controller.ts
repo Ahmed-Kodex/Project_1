@@ -34,10 +34,9 @@ export class AuthController {
   @ApiConsumes('application/x-www-form-urlencoded')
   @ApiBody({ type: VerifyOtpDto })
   async verifyOtp(@Body() body: VerifyOtpDto) {
-    return this.authService.verifyOtpAndLogin(body.code);
-    // return this.authService.verifyOtpAndLogin(body.username, body.code);
+    return this.authService.verifyOtpAndLogin(body.email, body.code);
   }
-  @Post('resend-otp')
+  @Post('send-otp')
   @ApiConsumes('application/x-www-form-urlencoded')
   @ApiBody({ type: ResendOtpDto })
   async resendOtp(@Body() body: ResendOtpDto) {
@@ -49,25 +48,25 @@ export class AuthController {
   async login(@Body() body: LoginDto) {
     return this.authService.login(body.email, body.password);
   }
-  @Post('forget-password')
-  @ApiConsumes('application/x-www-form-urlencoded')
-  @ApiBody({ type: ForgetPassDto })
-  async forgotPassword(@Body() body: ForgetPassDto) {
-    return this.authService.forgotPassword(body.email);
-  }
-  @Post('verify-otp2')
-  @ApiConsumes('application/x-www-form-urlencoded')
-  @ApiBody({ type: VerifyOtpDto })
-  async verifyOtp2(@Body() body: VerifyOtpDto) {
-    return this.authService.verifyOtpAndLogin(body.code);
-  }
-  @Post('reset-password')
+  // @Post('forget-password')
+  // @ApiConsumes('application/x-www-form-urlencoded')
+  // @ApiBody({ type: ForgetPassDto })
+  // async forgotPassword(@Body() body: ForgetPassDto) {
+  //   return this.authService.forgotPassword(body.email);
+  // }
+  // @Post('verify-otp2')
+  // @ApiConsumes('application/x-www-form-urlencoded')
+  // @ApiBody({ type: VerifyOtpDto })
+  // async verifyOtp2(@Body() body: VerifyOtpDto) {
+  //   return this.authService.verifyOtpAndLogin(body.code);
+  // }
+  @Post('update-password')
   @ApiConsumes('application/x-www-form-urlencoded')
   @ApiBody({ type: ResetPassDto })
   async resetPassword(@Body() body: ResetPassDto) {
     return this.authService.resetPassword(
-      // body.email,
       // body.code,
+      body.email,
       body.newPassword,
       body.confirmPassword,
     );
