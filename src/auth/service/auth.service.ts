@@ -13,6 +13,7 @@ import { OtpService } from '../../common/otp/otp.service';
 import { MailService } from '../../common/mail/mail.service';
 import { User } from '../../users/user.entity';
 import { MESSAGES } from '../../config/messages';
+import { SocialLoginDto } from '../dto/SocialLogin.dto';
 
 @Injectable()
 export class AuthService {
@@ -24,7 +25,7 @@ export class AuthService {
     private readonly otpService: OtpService,
     private readonly mailService: MailService,
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
 
   async signup(
     username: string,
@@ -53,7 +54,6 @@ export class AuthService {
       otp: otp.code,
     };
   }
-
   async verifyOtpAndLogin(
     email: string,
     code: string,
@@ -81,7 +81,6 @@ export class AuthService {
       verified: updatedUser.isEmailVerified,
     };
   }
-
   async login(username: string, password: string) {
     if (!username || !password) {
       throw new UnauthorizedException(MESSAGES.USER_PASSWORD_REQUIRED);
@@ -105,20 +104,6 @@ export class AuthService {
       user: user,
     };
   }
-
-  // async forgotPassword(email: string) {
-  //   const user = await this.usersService.findByEmail(email);
-  //   if (!user) {
-  //     throw new BadRequestException(MESSAGES.EMAIL_NOT_FOUND);
-  //   }
-  //   await this.usersService.markEmailUnverified(user.id);
-  //   const tempPassword = Math.random().toString(36).slice(2) + Date.now();
-  //   await this.usersService.updatePassword(user.id, tempPassword);
-  //   const otp = await this.otpService.createOtpForUser(user.id, 10);
-  //   await this.mailService.sendOtp(user.email, otp.code);
-  //   return { message: MESSAGES.OTP_SENT, otp: otp.code };
-  // }
-
   async resetPassword(
     email: string,
     newPassword: string,
@@ -139,8 +124,6 @@ export class AuthService {
     // await this.usersService.markEmailUnverified(user.id);
     return { message: MESSAGES.PASSWORD_CHANGED };
   }
-
-  // for Resend OTP if some mistake
   async resendOtp(email: string): Promise<{ message: string; otp: string }> {
     const user = await this.usersService.findByEmail(email);
     if (!user) throw new BadRequestException(MESSAGES.USER_NOT_FOUND);
@@ -158,4 +141,66 @@ export class AuthService {
       otp: otp.code,
     };
   }
+  async socialLogin(dto: SocialLoginDto) {
+    const { email, socialId, socialType, username } = dto;
+    const existingByEmail = await this.usersService.findByEmail(email);
+    if (existingByEmail) {
+      return {
+        success: false,
+        message: 'Email already exists. Please login using your registered method.',
+        data: null,
+      };
+    }
+    const existingBySocialId = await this.usersService.findBySocialId(socialId);
+    if (existingBySocialId) {
+      return {
+        success: false,
+        message: 'This social account is already linked to another user.',
+        data: null,
+      };
+    }
+    const user = await this.usersService.createSocialUser({
+      email,
+      username: username ?? email.split('@')[0],
+      socialId,
+      socialType,
+      isEmailVerified: true,
+    });
+    const payload = { sub: user.id, email: user.email };
+    const accessToken = this.jwtService.sign(payload);
+    return {
+      message: 'Successfully Login.',
+      success: true,
+      data: {
+        user: {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          socialId: user.socialId,
+          socialType: user.socialType,
+          // firstName: user.firstName,
+          // lastName: user.lastName,
+          // age: user.age,
+          // countryId: user.countryId,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
+        },
+        accessToken,
+      },
+    };
+  }
 }
+
+
+// async forgotPassword(email: string) {
+//   const user = await this.usersService.findByEmail(email);
+//   if (!user) {
+//     throw new BadRequestException(MESSAGES.EMAIL_NOT_FOUND);
+//   }
+//   await this.usersService.markEmailUnverified(user.id);
+//   const tempPassword = Math.random().toString(36).slice(2) + Date.now();
+//   await this.usersService.updatePassword(user.id, tempPassword);
+//   const otp = await this.otpService.createOtpForUser(user.id, 10);
+//   await this.mailService.sendOtp(user.email, otp.code);
+//   return { message: MESSAGES.OTP_SENT, otp: otp.code };
+// }

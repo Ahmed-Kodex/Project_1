@@ -13,6 +13,7 @@ import { SignupDto } from '../dto/signup.dto';
 import { ForgetPassDto } from '../dto/forget-pasword.dto';
 import { ResetPassDto } from '../dto/reset-pasword.dto';
 import { ResendOtpDto } from '../dto/resend-otp.dto copy';
+import { SocialLoginDto } from '../dto/SocialLogin.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -69,6 +70,13 @@ export class AuthController {
       body.email,
       body.newPassword,
       body.confirmPassword,
-    );
+    );  
+  }
+  @Post('social-login')
+  // @ApiConsumes('application/json')
+  @ApiConsumes('application/x-www-form-urlencoded')
+  @ApiBody({ type: SocialLoginDto })
+  async socialLogin(@Body() dto: SocialLoginDto) {
+    return this.authService.socialLogin(dto);
   }
 }

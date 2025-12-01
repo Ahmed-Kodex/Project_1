@@ -23,6 +23,25 @@ export class User {
   @Column({ default: false })
   isEmailVerified: boolean;
 
+  // ⬇ NEW
+  @Column({ nullable: true })
+  socialId: string;
+
+  @Column({ nullable: true })
+  socialType: string; // google | facebook | apple etc.
+
+  @Column({ nullable: true })
+  firstName: string;
+
+  @Column({ nullable: true })
+  lastName: string;
+
+  @Column({ nullable: true })
+  age: number;
+
+  @Column({ nullable: true })
+  countryId: number;
+
   @CreateDateColumn({ type: 'timestamp', precision: 0 })
   createdAt: Date;
 

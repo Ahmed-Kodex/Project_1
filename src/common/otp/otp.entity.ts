@@ -16,6 +16,7 @@ export class Otp {
   @Column()
   userId: number;
 
+  
   @Column()
   expiresAt: Date;
 
