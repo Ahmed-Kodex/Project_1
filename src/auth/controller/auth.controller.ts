@@ -73,8 +73,8 @@ export class AuthController {
     );  
   }
   @Post('social-login')
-  // @ApiConsumes('application/json')
-  @ApiConsumes('application/x-www-form-urlencoded')
+  @ApiConsumes('application/json')
+  // @ApiConsumes('application/x-www-form-urlencoded')
   @ApiBody({ type: SocialLoginDto })
   async socialLogin(@Body() dto: SocialLoginDto) {
     return this.authService.socialLogin(dto);

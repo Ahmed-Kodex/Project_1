@@ -6,7 +6,7 @@ import {
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
-import { User } from './user.entity';
+import { User } from '../database/entities/user.entity';
 import { MESSAGES } from '../config/messages';
 
 @Injectable()
@@ -56,7 +56,6 @@ export class UsersService {
   async findBySocialId(socialId: string) {
     return this.usersRepository.findOne({ where: { socialId } });
   }
-
   async findByEmail(email: string) {
     return this.usersRepository.findOne({ where: { email } });
   }

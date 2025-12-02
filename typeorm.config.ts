@@ -1,6 +1,6 @@
 import { DataSource } from 'typeorm';
-import { User } from './src/users/user.entity';
-import { Otp } from './src/common/otp/otp.entity';
+import { User } from './src/database/entities/user.entity';
+import { Otp } from './src/database/entities/otp.entity';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
@@ -15,4 +15,4 @@ export default new DataSource({
   entities: [User, Otp],
   migrations: ['src/database/migrations/*.ts'],
   synchronize: false,
-});
+}); 

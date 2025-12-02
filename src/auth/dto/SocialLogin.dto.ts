@@ -7,7 +7,7 @@ export class SocialLoginDto {
   @IsString()
   username: string;
 
-  @ApiProperty({ example: 'abc@gmail.com' })
+  @ApiProperty({ example: 'abcd@gmail.com' })
   @IsEmail()
   email: string;
 

@@ -3,7 +3,7 @@ import * as nodemailer from 'nodemailer';
 
 @Injectable()
 export class MailService {
-  private transporter: nodemailer.Transporter; 
+  private transporter: nodemailer.Transporter;
   private logger = new Logger(MailService.name);
 
   constructor() {

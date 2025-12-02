@@ -5,6 +5,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class User {
@@ -17,30 +18,18 @@ export class User {
   @Column({ unique: true })
   email: string;
 
-  @Column({ nullable: true })
-  password: string;
+  @Exclude()
+  @Column({ type: 'varchar', nullable: true })
+  password?: string | null;
 
   @Column({ default: false })
   isEmailVerified: boolean;
 
-  // ⬇ NEW
-  @Column({ nullable: true })
+  @Column({ unique: true, nullable: true })
   socialId: string;
 
   @Column({ nullable: true })
   socialType: string; // google | facebook | apple etc.
-
-  @Column({ nullable: true })
-  firstName: string;
-
-  @Column({ nullable: true })
-  lastName: string;
-
-  @Column({ nullable: true })
-  age: number;
-
-  @Column({ nullable: true })
-  countryId: number;
 
   @CreateDateColumn({ type: 'timestamp', precision: 0 })
   createdAt: Date;

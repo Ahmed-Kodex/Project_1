@@ -11,7 +11,7 @@ import * as bcrypt from 'bcrypt';
 import { UsersService } from '../../users/users.service';
 import { OtpService } from '../../common/otp/otp.service';
 import { MailService } from '../../common/mail/mail.service';
-import { User } from '../../users/user.entity';
+import { User } from '../../database/entities/user.entity';
 import { MESSAGES } from '../../config/messages';
 import { SocialLoginDto } from '../dto/SocialLogin.dto';
 
@@ -32,7 +32,8 @@ export class AuthService {
     email: string,
     password: string,
     confirmPassword: string,
-  ): Promise<{ message: string; userId: number; otp: string }> {
+    // ): Promise<{ message: string; userId: number; otp: string }> {
+  ): Promise<{ message: string; otp: string }> {
     if (!username || !email || !password || !confirmPassword) {
       throw new BadRequestException(MESSAGES.FIELDS_REQUIRED);
     }
@@ -50,14 +51,15 @@ export class AuthService {
     await this.mailService.sendOtp(user.email, otp.code);
     return {
       message: MESSAGES.OTP_SENT,
-      userId: user.id,
+      // userId: user.id,
       otp: otp.code,
     };
   }
   async verifyOtpAndLogin(
     email: string,
     code: string,
-  ): Promise<{ access_token: string; verified: any }> {
+    // ): Promise<{ access_token: string; verified: any }> {
+  ): Promise<{ verified: any, message: string }> {
     if (!email || !code) {
       throw new BadRequestException(MESSAGES.EMAIL_CODE_REQUIRED);
     }
@@ -77,11 +79,12 @@ export class AuthService {
     const payload = { sub: updatedUser.id, username: updatedUser.username };
     const token = this.jwtService.sign(payload);
     return {
-      access_token: token,
+      message: 'Account Verified',
       verified: updatedUser.isEmailVerified,
+      // access_token: token,
     };
   }
-  async login(username: string, password: string) {
+  async login(username: string, password: string, message?: string) {
     if (!username || !password) {
       throw new UnauthorizedException(MESSAGES.USER_PASSWORD_REQUIRED);
     }
@@ -100,8 +103,11 @@ export class AuthService {
     const access_token = this.jwtService.sign(payload);
 
     return {
-      access_token,
-      user: user,
+      message: message || MESSAGES.SUCCESS_LOGIN,
+      data: {
+        user: user,
+        access_token,
+      }
     };
   }
   async resetPassword(
@@ -145,19 +151,15 @@ export class AuthService {
     const { email, socialId, socialType, username } = dto;
     const existingByEmail = await this.usersService.findByEmail(email);
     if (existingByEmail) {
-      return {
-        success: false,
-        message: 'Email already exists. Please login using your registered method.',
-        data: null,
-      };
+      throw new BadRequestException(
+        MESSAGES.EMAIL_ALREADY_EXIST
+      );
     }
     const existingBySocialId = await this.usersService.findBySocialId(socialId);
     if (existingBySocialId) {
-      return {
-        success: false,
-        message: 'This social account is already linked to another user.',
-        data: null,
-      };
+      throw new BadRequestException(
+        MESSAGES.ACCOUNT_ALREADY_LINKED
+      );
     }
     const user = await this.usersService.createSocialUser({
       email,
@@ -169,38 +171,11 @@ export class AuthService {
     const payload = { sub: user.id, email: user.email };
     const accessToken = this.jwtService.sign(payload);
     return {
-      message: 'Successfully Login.',
-      success: true,
+      message: MESSAGES.SUCCESS_LOGIN,
       data: {
-        user: {
-          id: user.id,
-          username: user.username,
-          email: user.email,
-          socialId: user.socialId,
-          socialType: user.socialType,
-          // firstName: user.firstName,
-          // lastName: user.lastName,
-          // age: user.age,
-          // countryId: user.countryId,
-          createdAt: user.createdAt,
-          updatedAt: user.updatedAt,
-        },
+        user,
         accessToken,
       },
     };
   }
 }
-
-
-// async forgotPassword(email: string) {
-//   const user = await this.usersService.findByEmail(email);
-//   if (!user) {
-//     throw new BadRequestException(MESSAGES.EMAIL_NOT_FOUND);
-//   }
-//   await this.usersService.markEmailUnverified(user.id);
-//   const tempPassword = Math.random().toString(36).slice(2) + Date.now();
-//   await this.usersService.updatePassword(user.id, tempPassword);
-//   const otp = await this.otpService.createOtpForUser(user.id, 10);
-//   await this.mailService.sendOtp(user.email, otp.code);
-//   return { message: MESSAGES.OTP_SENT, otp: otp.code };
-// }

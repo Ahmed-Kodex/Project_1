@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Otp } from './otp.entity';
+import { Otp } from '../../database/entities/otp.entity';
 
 @Injectable()
 export class OtpService {

@@ -23,8 +23,9 @@ export const MESSAGES = {
   EMAIL_NOT_FOUND: 'No account found with this email address.',
   EMAIL_NOT_VERIFIED: 'Your email is not verified.',
   PASSWORD_CHANGED: 'Password updated successfully.',
-  SUCCESS_LOGIN: 'Successfully Login',
+  SUCCESS_LOGIN: 'User logged in successfully.',
   UPDATE_ERROR: 'Something went wrong. User not found after update.',
   EMAIL_ALREADY_EXIST: 'Email already exists. Please login using your registered method.',
   ACCOUNT_ALREADY_LINKED: 'This social account is already linked to another user.',
+  EXCEPTION_ERROR: 'Something went wrong. Please try again later.',
 };
