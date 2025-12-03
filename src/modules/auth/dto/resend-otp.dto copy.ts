@@ -7,4 +7,3 @@ export class ResendOtpDto {
   @IsNotEmpty()
   email: string;
 }
- 

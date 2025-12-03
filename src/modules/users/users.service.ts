@@ -6,8 +6,8 @@ import {
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
-import { User } from '../database/entities/user.entity';
-import { MESSAGES } from '../config/messages';
+import { User } from '../../database/entities/user.entity';
+import { MESSAGES } from '../../config/messages';
 
 @Injectable()
 export class UsersService {
@@ -39,7 +39,7 @@ export class UsersService {
     const exists = await this.usersRepository.findOne({
       where: [{ email: data.email }],
     });
-    if (exists) throw new BadRequestException('Email already in use');
+    if (exists) throw new BadRequestException(MESSAGES.EMAIL_ALREADY_USE);
     const hashed = await bcrypt.hash(
       data.password ?? Math.random().toString(36).slice(-10),
       10,

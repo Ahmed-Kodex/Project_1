@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { UsersModule } from '../users/users.module';
-import { MailModule } from '../common/mail/mail.module';
-import { OtpModule } from '../common/otp/otp.module';
+import { MailModule } from '../../common/mail/mail.module';
+import { OtpModule } from '../../common/otp/otp.module';
 import { AuthService } from './service/auth.service';
 import { AuthController } from './controller/auth.controller';
 import { JwtStrategy } from './strategies/jwt.strategy';

@@ -1,24 +1,30 @@
 import {
   Entity,
-  Column,
   PrimaryGeneratedColumn,
+  Column,
   CreateDateColumn,
 } from 'typeorm';
 
 @Entity()
-export class Otp {
+export class FileEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  code: string;
+  originalName: string;
 
   @Column()
-  userId: number;
+  fileName: string;
 
   @Column()
-  expiresAt: Date;
+  mimetype: string;
 
-  @CreateDateColumn({ type: 'timestamp', precision: 0 })
+  @Column()
+  size: number;
+
+  @Column()
+  path: string;
+
+  @CreateDateColumn()
   createdAt: Date;
 }

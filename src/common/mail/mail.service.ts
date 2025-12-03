@@ -1,10 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
-import * as nodemailer from 'nodemailer';
+import nodemailer, { SendMailOptions, SentMessageInfo } from 'nodemailer';
 
 @Injectable()
 export class MailService {
-  private transporter: nodemailer.Transporter;
   private logger = new Logger(MailService.name);
+  private transporter: nodemailer.Transporter<SentMessageInfo>;
 
   constructor() {
     this.transporter = nodemailer.createTransport({
@@ -18,14 +18,16 @@ export class MailService {
     });
   }
 
-  async sendOtp(email: string, code: string) {
+  async sendOtp(email: string, code: string): Promise<SentMessageInfo> {
     const from = process.env.FROM_EMAIL;
-    const info = await this.transporter.sendMail({
+    const mailOptions: SendMailOptions = {
       from,
       to: email,
       subject: 'Your OTP code',
       text: `Your verification code is ${code}. It expires in ${process.env.OTP_EXPIRES_MINUTES || 10} minutes.`,
-    });
+    };
+
+    const info = await this.transporter.sendMail(mailOptions);
     this.logger.log(`OTP email sent: ${info.messageId}`);
     return info;
   }

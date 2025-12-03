@@ -1,10 +1,12 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { UsersModule } from './users/users.module';
-import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './modules/users/users.module';
+import { AuthModule } from './modules/auth/auth.module';
 import { OtpModule } from './common/otp/otp.module';
 import { MailModule } from './common/mail/mail.module';
+import { CommonModule } from './modules/common/common.module';
+import { BrandModule } from './modules/brand/brand.module';
 
 @Module({
   imports: [
@@ -23,6 +25,10 @@ import { MailModule } from './common/mail/mail.module';
     AuthModule,
     OtpModule,
     MailModule,
+    CommonModule,
+    BrandModule,
   ],
+  // controllers: [CommonController],
+  // providers: [CommonService],
 })
 export class AppModule {}

@@ -9,10 +9,10 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from '../../users/users.service';
-import { OtpService } from '../../common/otp/otp.service';
-import { MailService } from '../../common/mail/mail.service';
-import { User } from '../../database/entities/user.entity';
-import { MESSAGES } from '../../config/messages';
+import { OtpService } from '../../../common/otp/otp.service';
+import { MailService } from '../../../common/mail/mail.service';
+// import { User } from '../../../database/entities/user.entity';
+import { MESSAGES } from '../../../config/messages';
 import { SocialLoginDto } from '../dto/SocialLogin.dto';
 
 @Injectable()
@@ -46,7 +46,7 @@ export class AuthService {
         throw new InternalServerErrorException(MESSAGES.USER_NOT_CREATED);
       });
 
-    const minutes = Number(process.env.OTP_EXPIRES_MINUTES || 10);
+    // const minutes = Number(process.env.OTP_EXPIRES_MINUTES || 10);
     const otp = await this.otpService.createOtpForUser(user.id, 10);
     await this.mailService.sendOtp(user.email, otp.code);
     return {
@@ -59,7 +59,7 @@ export class AuthService {
     email: string,
     code: string,
     // ): Promise<{ access_token: string; verified: any }> {
-  ): Promise<{ verified: any, message: string }> {
+  ): Promise<{ verified: any; message: string }> {
     if (!email || !code) {
       throw new BadRequestException(MESSAGES.EMAIL_CODE_REQUIRED);
     }
@@ -76,8 +76,8 @@ export class AuthService {
     if (!updatedUser) {
       throw new ForbiddenException(MESSAGES.UPDATE_ERROR);
     }
-    const payload = { sub: updatedUser.id, username: updatedUser.username };
-    const token = this.jwtService.sign(payload);
+    // const payload = { sub: updatedUser.id, username: updatedUser.username };
+    // const token = this.jwtService.sign(payload);
     return {
       message: 'Account Verified',
       verified: updatedUser.isEmailVerified,
@@ -95,7 +95,7 @@ export class AuthService {
     if (!user.isEmailVerified) {
       throw new UnauthorizedException(MESSAGES.EMAIL_NOT_VERIFIED);
     }
-    const matched = await bcrypt.compare(password, user.password);
+    const matched: boolean = await bcrypt.compare(password, user.password);
     if (!matched) {
       throw new UnauthorizedException(MESSAGES.INVALID_PASSWORD);
     }
@@ -107,7 +107,7 @@ export class AuthService {
       data: {
         user: user,
         access_token,
-      }
+      },
     };
   }
   async resetPassword(
@@ -139,7 +139,7 @@ export class AuthService {
     try {
       await this.mailService.sendOtp(user.email, otp.code);
     } catch (err) {
-      this.logger.error(MESSAGES.OTP_FAILED, err as any);
+      this.logger.error(MESSAGES.OTP_FAILED, err);
       throw new InternalServerErrorException(MESSAGES.OTP_FAILED);
     }
     return {
@@ -151,15 +151,11 @@ export class AuthService {
     const { email, socialId, socialType, username } = dto;
     const existingByEmail = await this.usersService.findByEmail(email);
     if (existingByEmail) {
-      throw new BadRequestException(
-        MESSAGES.EMAIL_ALREADY_EXIST
-      );
+      throw new BadRequestException(MESSAGES.EMAIL_ALREADY_EXIST);
     }
     const existingBySocialId = await this.usersService.findBySocialId(socialId);
     if (existingBySocialId) {
-      throw new BadRequestException(
-        MESSAGES.ACCOUNT_ALREADY_LINKED
-      );
+      throw new BadRequestException(MESSAGES.ACCOUNT_ALREADY_LINKED);
     }
     const user = await this.usersService.createSocialUser({
       email,

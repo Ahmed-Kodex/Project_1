@@ -6,7 +6,7 @@ export class ResetPassDto {
   @IsNotEmpty()
   @IsEmail()
   email: string;
- 
+
   // @ApiProperty({ example: '123456' })
   // @IsNotEmpty()
   // code: string;

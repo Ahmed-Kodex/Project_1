@@ -6,5 +6,4 @@ export class ForgetPassDto {
   @IsString()
   @IsNotEmpty()
   email: string;
-} 
- 
+}

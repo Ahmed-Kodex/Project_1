@@ -25,7 +25,15 @@ export const MESSAGES = {
   PASSWORD_CHANGED: 'Password updated successfully.',
   SUCCESS_LOGIN: 'User logged in successfully.',
   UPDATE_ERROR: 'Something went wrong. User not found after update.',
-  EMAIL_ALREADY_EXIST: 'Email already exists. Please login using your registered method.',
-  ACCOUNT_ALREADY_LINKED: 'This social account is already linked to another user.',
+  EMAIL_ALREADY_EXIST:
+    'Email already exists. Please login using your registered method.',
+  ACCOUNT_ALREADY_LINKED:
+    'This social account is already linked to another user.',
+  EMAIL_ALREADY_USE: 'Email already in use',
   EXCEPTION_ERROR: 'Something went wrong. Please try again later.',
+  BRAND_ADDED: 'Brand added successfully',
+  BRAND_FETCHED: 'Brands fetched successfully',
+  BRAND_NAME_REQUIRED: 'Brand name is required',
+  FILE_UPLOADED: 'File uploaded successfully',
+  ERROR: 'Something went wrong',
 };
