@@ -25,7 +25,7 @@ export class AuthService {
     private readonly otpService: OtpService,
     private readonly mailService: MailService,
     private readonly jwtService: JwtService,
-  ) { }
+  ) {}
 
   async signup(
     username: string,
@@ -95,7 +95,8 @@ export class AuthService {
     if (!user.isEmailVerified) {
       throw new UnauthorizedException(MESSAGES.EMAIL_NOT_VERIFIED);
     }
-    const matched: boolean = await bcrypt.compare(password, user.password);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+    const matched = (await bcrypt.compare(password, user.password)) as boolean;
     if (!matched) {
       throw new UnauthorizedException(MESSAGES.INVALID_PASSWORD);
     }

@@ -33,6 +33,7 @@ export const MESSAGES = {
   EXCEPTION_ERROR: 'Something went wrong. Please try again later.',
   BRAND_ADDED: 'Brand added successfully',
   BRAND_FETCHED: 'Brands fetched successfully',
+  USERS_FETCHED: 'Users fetched successfully',
   BRAND_NAME_REQUIRED: 'Brand name is required',
   FILE_UPLOADED: 'File uploaded successfully',
   ERROR: 'Something went wrong',

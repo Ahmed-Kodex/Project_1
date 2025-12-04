@@ -26,19 +26,20 @@ export class AuthController {
       body.confirmPassword,
     );
   }
-  @Post('verify-otp')
-  @ApiOperation({ summary: 'Verify OTP for email verification' })
-  @ApiConsumes('application/x-www-form-urlencoded')
-  @ApiBody({ type: VerifyOtpDto })
-  async verifyOtp(@Body() body: VerifyOtpDto) {
-    return this.authService.verifyOtpAndLogin(body.email, body.code);
-  }
+
   @Post('send-otp')
   @ApiOperation({ summary: 'Send OTP to user email' })
   @ApiConsumes('application/x-www-form-urlencoded')
   @ApiBody({ type: ResendOtpDto })
   async resendOtp(@Body() body: ResendOtpDto) {
     return this.authService.resendOtp(body.email);
+  }
+  @Post('verify-otp')
+  @ApiOperation({ summary: 'Verify OTP for email verification' })
+  @ApiConsumes('application/x-www-form-urlencoded')
+  @ApiBody({ type: VerifyOtpDto })
+  async verifyOtp(@Body() body: VerifyOtpDto) {
+    return this.authService.verifyOtpAndLogin(body.email, body.code);
   }
   @Post('login')
   @ApiOperation({ summary: 'Login User with email and password' })

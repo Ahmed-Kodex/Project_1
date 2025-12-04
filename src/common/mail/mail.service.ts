@@ -27,7 +27,9 @@ export class MailService {
       text: `Your verification code is ${code}. It expires in ${process.env.OTP_EXPIRES_MINUTES || 10} minutes.`,
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const info = await this.transporter.sendMail(mailOptions);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     this.logger.log(`OTP email sent: ${info.messageId}`);
     return info;
   }

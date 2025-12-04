@@ -51,4 +51,7 @@ async function bootstrap() {
   console.log(`Server running on http://localhost:3000`);
   console.log(`Swagger available at: ${await app.getUrl()}/siluetAI`);
 }
-bootstrap();
+bootstrap().catch((err) => {
+  console.error('NestJS bootstrap error:', err);
+  process.exit(1);
+});

@@ -28,7 +28,7 @@ export class CommonController {
       }),
     }),
   )
-  async uploadFile(@UploadedFile() file: Express.Multer.File) {
+  uploadFile(@UploadedFile() file: Express.Multer.File) {
     return {
       message: MESSAGES.FILE_UPLOADED,
       data: {
