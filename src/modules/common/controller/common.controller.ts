@@ -2,7 +2,7 @@ import {
   Controller,
   Post,
   UploadedFile,
-  UseInterceptors,
+  UseInterceptors, 
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiBody, ApiTags, ApiOperation } from '@nestjs/swagger';
@@ -29,6 +29,7 @@ export class CommonController {
     }),
   )
   uploadFile(@UploadedFile() file: Express.Multer.File) {
+    const cleanPath = file.path.replace(/\\/g, '/');
     return {
       message: MESSAGES.FILE_UPLOADED,
       data: {
@@ -36,7 +37,7 @@ export class CommonController {
         fileName: file.filename,
         mimetype: file.mimetype,
         size: file.size,
-        path: file.path,
+        path: cleanPath,
         url: `/upload/${file.filename}`,
       },
     };

@@ -13,38 +13,41 @@ export class BrandService {
     private brandRepo: Repository<Brand>,
     // @InjectRepository(User)
     // private userRepo: Repository<User>,
-  ) {}
+  ) { }
 
-  async createBrand(dto: CreateBrandDto, logoPath: string, user: User) {
-  const brandName = dto.brandName?.trim() || '';
-  let brand = await this.brandRepo.findOne({
-    where: { brandName },
-    relations: ['user'],
-  });
-  if (brand) {
-    brand.description = dto.description || '';
-    brand.fileLogo = logoPath;
-    brand.status = 1;
-    brand.user = user;
-    await this.brandRepo.save(brand);
-  } else {
-    brand = this.brandRepo.create({
+  async createBrand(dto: CreateBrandDto, logoPath: string, user: User): Promise<Brand> {
+    const brandName = dto.brandName?.trim() || '';
+    const brandsWithName = await this.brandRepo.find({
+      where: { brandName },
+      relations: ['user'],
+    });
+    const sameUserBrand = brandsWithName.find(
+      b => b.user && b.user.id === user.id,
+    );
+    if (sameUserBrand) {
+      sameUserBrand.description = dto.description || '';
+      sameUserBrand.fileLogo = logoPath;
+      sameUserBrand.status = 1;
+      sameUserBrand.user = user;
+      await this.brandRepo.save(sameUserBrand);
+      return (await this.brandRepo.findOne({
+        where: { id: sameUserBrand.id },
+        relations: ['user'],
+      }))!;
+    }
+    const newBrand = this.brandRepo.create({
       brandName,
       description: dto.description || '',
       fileLogo: logoPath,
       user,
       status: 1,
     });
-    await this.brandRepo.save(brand);
+    await this.brandRepo.save(newBrand);
+    return (await this.brandRepo.findOne({
+      where: { id: newBrand.id },
+      relations: ['user'],
+    }))!;
   }
-  const fullBrand = await this.brandRepo.findOne({
-    where: { id: brand.id },
-    relations: ['user'],
-  });
-  return fullBrand!;
-}
-
-
   async getAllBrands() {
     return this.brandRepo.find({ relations: ['user'] });
   }
