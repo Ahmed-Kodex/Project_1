@@ -12,18 +12,18 @@ export class AvatarSeeder {
   async run() {
     console.log('➡ Seeding Avatars...');
     const data = [
-      { id: 1, name: 'Busy Pilates Mom', thumbnail: '/avatars/pilates_mom.png' },
-      { id: 2, name: 'Older Pilates Woman', thumbnail: '/avatars/older_woman.png' },
-      { id: 3, name: 'No Avatar', thumbnail: '/avatars/no_avatar.png' },
-      { id: 4, name: 'Yoga Enthusiast', thumbnail: '/avatars/yoga_enthusiast.png' },
-      { id: 5, name: 'Young Athlete', thumbnail: '/avatars/young_athlete.png' },
-      { id: 6, name: 'Casual Jogger', thumbnail: '/avatars/casual_jogger.png' },
-      { id: 7, name: 'Fitness Coach', thumbnail: '/avatars/fitness_coach.png' },
-      { id: 8, name: 'Meditating Woman', thumbnail: '/avatars/meditating_woman.png' },
-      { id: 9, name: 'Gym Trainer', thumbnail: '/avatars/gym_trainer.png' },
-      { id: 10, name: 'Happy Mom', thumbnail: '/avatars/happy_mom.png' },
+      { id: 1, name: 'Busy Pilates Mom', thumbnail: 'upload/avatars/pilates_mom.png' },
+      { id: 2, name: 'Older Pilates Woman', thumbnail: 'upload/avatars/older_woman.png' },
+      { id: 3, name: 'No Avatar', thumbnail: 'upload/avatars/no_avatar.png' },
+      { id: 4, name: 'Yoga Enthusiast', thumbnail: 'upload/avatars/yoga_enthusiast.png' },
+      { id: 5, name: 'Young Athlete', thumbnail: 'upload/avatars/young_athlete.png' },
+      { id: 6, name: 'Casual Jogger', thumbnail: 'upload/avatars/casual_jogger.png' },
+      { id: 7, name: 'Fitness Coach', thumbnail: 'upload/avatars/fitness_coach.png' },
+      { id: 8, name: 'Meditating Woman', thumbnail: 'upload/avatars/meditating_woman.png' },
+      { id: 9, name: 'Gym Trainer', thumbnail: 'upload/avatars/gym_trainer.png' },
+      { id: 10, name: 'Happy Mom', thumbnail: 'upload/avatars/happy_mom.png' },
     ];
-
+ 
     for (const item of data) {
       const exists = await this.avatarRepo.findOne({
         where: { id: item.id },
@@ -41,4 +41,4 @@ export class AvatarSeeder {
     }
     console.log('✔ Avatar seeding completed.');
   }
-}
+} 

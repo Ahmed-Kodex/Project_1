@@ -4,18 +4,28 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
+  JoinColumn
 } from 'typeorm';
+import { User } from './user.entity';
 
 @Entity('video_specs')
 export class VideoSpec {
   @PrimaryGeneratedColumn()
   id: number;
+ 
+  @Column({ type: 'int', nullable: true })
+  userId: number;
 
+  @ManyToOne(() => User, { nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'userId' })
+  user: User;
+ 
   @Column({ type: 'int' })
-  length: number; // in seconds
+  length: number;
 
   @Column({ type: 'varchar', length: 255 })
-  goal: string; // e.g., Brand Awareness, Product etc.
+  goal: string; 
 
   @CreateDateColumn({ type: 'timestamp', precision: 0 })
   createdAt: Date;

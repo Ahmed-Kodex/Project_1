@@ -54,3 +54,4 @@ export class BrandController {
     return this.brandService.findAllpaginated(paginationDto);
   }
 }
+ 

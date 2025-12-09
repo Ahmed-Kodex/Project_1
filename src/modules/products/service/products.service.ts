@@ -21,9 +21,9 @@ export class ProductService {
     private readonly productRepo: Repository<Product>,
     @InjectRepository(Brand)
     private readonly brandRepo: Repository<Brand>,
-  ) {}
+  ) { }
 
-  async create(dto: CreateProductDto) {
+  async create(dto: CreateProductDto, user: any) {
     let brand: Brand | null = null;
     if (dto.brand_id) {
       brand = await this.brandRepo.findOne({ where: { id: dto.brand_id } });
@@ -33,12 +33,12 @@ export class ProductService {
         );
       }
     }
-    const whereCondition: ProductWhereCondition = {
-      name: dto.name,
-    };
+
+    const whereCondition: ProductWhereCondition = { name: dto.name };
     if (dto.brand_id) {
       whereCondition.brand = { id: dto.brand_id };
     }
+
     const existingProduct = await this.productRepo.findOne({
       where: whereCondition,
     });
@@ -47,13 +47,18 @@ export class ProductService {
         'Product already exists with the same brand',
       );
     }
+
     const productData: Partial<Product> = {
       name: dto.name,
       description: dto.description,
       brand: brand ?? undefined,
+      user: user,      // <-- attach user here
+      userId: user.id, // <-- optional, but good to have
     };
+
     const product = this.productRepo.create(productData);
     await this.productRepo.save(product);
+
     return {
       status: 'success',
       message: 'Product created successfully',
@@ -62,23 +67,25 @@ export class ProductService {
           id: product.id,
           name: product.name,
           brand_id: product.brand_id,
+          userId: product.userId,
           description: product.description,
           createdAt: product.createdAt,
           updatedAt: product.updatedAt,
         },
         brand: brand
           ? {
-              id: brand.id,
-              name: brand.name,
-              logo: brand.logo,
-              description: brand.description,
-              createdAt: brand.createdAt,
-              updatedAt: brand.updatedAt,
-            }
+            id: brand.id,
+            name: brand.name,
+            logo: brand.logo,
+            description: brand.description,
+            createdAt: brand.createdAt,
+            updatedAt: brand.updatedAt,
+          }
           : null,
       },
     };
   }
+
   async getAll(paginationDto: paginatedProductsDto) {
     const page = paginationDto.page || 1;
     const limit = paginationDto.limit || 10;
@@ -99,13 +106,13 @@ export class ProductService {
       updatedAt: product.updatedAt,
       brand: product.brand
         ? {
-            id: product.brand.id,
-            name: product.brand.name,
-            logo: product.brand.logo,
-            description: product.brand.description,
-            createdAt: product.brand.createdAt,
-            updatedAt: product.brand.updatedAt,
-          }
+          id: product.brand.id,
+          name: product.brand.name,
+          logo: product.brand.logo,
+          description: product.brand.description,
+          createdAt: product.brand.createdAt,
+          updatedAt: product.brand.updatedAt,
+        }
         : null,
     }));
     return {

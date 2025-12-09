@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, UseGuards, Query } from '@nestjs/common';
+import { Controller, Post, Get, Body, UseGuards, Query, Request } from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
@@ -17,13 +17,14 @@ import { JwtAuthGuard } from 'src/modules/auth/guard/jwt.guard';
 export class ProductController {
   constructor(private readonly productService: ProductService) { }
 
+  @Post('create')
   @ApiConsumes('application/x-www-form-urlencoded')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('access-token')
-  @Post('create')
   @ApiOperation({ summary: 'Create a new product' })
-  async create(@Body() dto: CreateProductDto) {
-    return this.productService.create(dto);
+  async create(@Body() dto: CreateProductDto, @Request() req) {
+    const user = req.user; // this comes from JwtAuthGuard
+    return this.productService.create(dto, user);
   }
 
   @UseGuards(JwtAuthGuard)
