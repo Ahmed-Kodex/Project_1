@@ -13,40 +13,51 @@ export class BrandService {
     private brandRepo: Repository<Brand>,
     // @InjectRepository(User)
     // private userRepo: Repository<User>,
-  ) { }
+  ) {}
 
-  async createBrand(dto: CreateBrandDto, logoPath: string, user: User): Promise<Brand> {
-    const brandName = dto.brandName?.trim() || '';
+  async createBrand(
+    dto: CreateBrandDto,
+    logoPath: string,
+    user: User,
+  ): Promise<Brand> {
+    const name = dto.brandName?.trim() || '';
+
     const brandsWithName = await this.brandRepo.find({
-      where: { brandName },
+      where: { name },
       relations: ['user'],
     });
+
     const sameUserBrand = brandsWithName.find(
-      b => b.user && b.user.id === user.id,
+      (b) => b.user && b.user.id === user.id,
     );
+
     if (sameUserBrand) {
       sameUserBrand.description = dto.description || '';
-      sameUserBrand.fileLogo = logoPath;
-      sameUserBrand.status = 1;
+      sameUserBrand.logo = logoPath;
       sameUserBrand.user = user;
       await this.brandRepo.save(sameUserBrand);
-      return (await this.brandRepo.findOne({
+      const updatedBrand = await this.brandRepo.findOne({
         where: { id: sameUserBrand.id },
         relations: ['user'],
-      }))!;
+      });
+
+      if (!updatedBrand) throw new Error('Brand update failed');
+      return updatedBrand;
     }
     const newBrand = this.brandRepo.create({
-      brandName,
+      name,
       description: dto.description || '',
-      fileLogo: logoPath,
+      logo: logoPath,
       user,
-      status: 1,
     });
     await this.brandRepo.save(newBrand);
-    return (await this.brandRepo.findOne({
+    const savedBrand = await this.brandRepo.findOne({
       where: { id: newBrand.id },
       relations: ['user'],
-    }))!;
+    });
+
+    if (!savedBrand) throw new Error('Brand creation failed');
+    return savedBrand;
   }
   async getAllBrands() {
     return this.brandRepo.find({ relations: ['user'] });
@@ -75,10 +86,10 @@ export class BrandService {
     if (!brand.user) {
       return {
         id: brand.id,
-        brandName: brand.brandName,
+        brandName: brand.name,
         description: brand.description,
-        status: brand.status,
-        fileLogo: brand.fileLogo,
+        // status: brand.status,
+        fileLogo: brand.logo,
         user: null,
       };
     }
@@ -87,10 +98,10 @@ export class BrandService {
     );
     return {
       id: brand.id,
-      brandName: brand.brandName,
+      brandName: brand.name,
       description: brand.description,
-      status: brand.status,
-      fileLogo: brand.fileLogo,
+      // status: brand.status,
+      fileLogo: brand.logo,
       user: userWithoutPassword,
     };
   }

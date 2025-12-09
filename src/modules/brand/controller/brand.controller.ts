@@ -22,7 +22,7 @@ import { User } from 'src/database/entities/user.entity';
 @ApiTags('Brand')
 @Controller('brand')
 export class BrandController {
-  constructor(private readonly brandService: BrandService) { }
+  constructor(private readonly brandService: BrandService) {}
 
   @Post('create')
   @UseGuards(JwtAuthGuard)

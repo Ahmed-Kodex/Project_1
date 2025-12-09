@@ -2,30 +2,23 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  ManyToOne,
-  JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { User } from './user.entity';
 
-@Entity('brands')
-export class Brand {
+@Entity()
+export class VideoType {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User)
-  @JoinColumn({ name: 'userId' })
-  user: User;
+  @Column()
+  videoName: string;
 
   @Column()
-  name: string;
-
-  @Column({ nullable: true, type: 'text' })
-  logo: string;
-
-  @Column({ nullable: true, type: 'text' })
   description: string;
+
+  @Column()
+  logo: string;
 
   @CreateDateColumn({ type: 'timestamp', precision: 0 })
   createdAt: Date;

@@ -7,6 +7,11 @@ import { OtpModule } from './common/otp/otp.module';
 import { MailModule } from './common/mail/mail.module';
 import { CommonModule } from './modules/common/common.module';
 import { BrandModule } from './modules/brand/brand.module';
+import { SeedModule } from './database/seeder/seed.module';
+import { VideoTypeModule } from './modules/videotype/videotype.module';
+import { AvatarModule } from './modules/avatar/avatar.module';
+import { ProductsModule } from './modules/products/products.module';
+import { HookModule } from './modules/hooks/hooks.module';
 
 @Module({
   imports: [
@@ -27,6 +32,11 @@ import { BrandModule } from './modules/brand/brand.module';
     MailModule,
     CommonModule,
     BrandModule,
+    SeedModule,
+    VideoTypeModule,
+    AvatarModule,
+    ProductsModule,
+    HookModule,
   ],
   // controllers: [CommonController],
   // providers: [CommonService],

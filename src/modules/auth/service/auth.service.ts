@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { UsersService } from '../../users/users.service';
+import { UsersService } from '../../users/service/users.service';
 import { OtpService } from '../../../common/otp/otp.service';
 import { MailService } from '../../../common/mail/mail.service';
 // import { User } from '../../../database/entities/user.entity';
@@ -25,14 +25,13 @@ export class AuthService {
     private readonly otpService: OtpService,
     private readonly mailService: MailService,
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
 
   async signup(
     username: string,
     email: string,
     password: string,
     confirmPassword: string,
-    // ): Promise<{ message: string; userId: number; otp: string }> {
   ): Promise<{ message: string; otp: string }> {
     if (!username || !email || !password || !confirmPassword) {
       throw new BadRequestException(MESSAGES.FIELDS_REQUIRED);
@@ -45,7 +44,6 @@ export class AuthService {
       .catch(() => {
         throw new InternalServerErrorException(MESSAGES.USER_NOT_CREATED);
       });
-
     // const minutes = Number(process.env.OTP_EXPIRES_MINUTES || 10);
     const otp = await this.otpService.createOtpForUser(user.id, 10);
     await this.mailService.sendOtp(user.email, otp.code);

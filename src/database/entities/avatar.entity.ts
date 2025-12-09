@@ -2,30 +2,20 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  ManyToOne,
-  JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { User } from './user.entity';
 
-@Entity('brands')
-export class Brand {
+@Entity('avatars')
+export class Avatar {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User)
-  @JoinColumn({ name: 'userId' })
-  user: User;
-
-  @Column()
+  @Column({ type: 'varchar', length: 255 })
   name: string;
 
-  @Column({ nullable: true, type: 'text' })
-  logo: string;
-
-  @Column({ nullable: true, type: 'text' })
-  description: string;
+  @Column({ type: 'varchar', length: 255 })
+  thumbnail: string;
 
   @CreateDateColumn({ type: 'timestamp', precision: 0 })
   createdAt: Date;
