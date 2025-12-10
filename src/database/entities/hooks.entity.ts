@@ -27,7 +27,6 @@ export class Hook {
   @Column({ type: 'boolean', default: true, nullable: true })
   is_active: boolean;
 
-
   @CreateDateColumn({ type: 'timestamp', precision: 0 })
   createdAt: Date;
 

@@ -25,7 +25,7 @@ export class AuthService {
     private readonly otpService: OtpService,
     private readonly mailService: MailService,
     private readonly jwtService: JwtService,
-  ) { }
+  ) {}
 
   async signup(
     username: string,

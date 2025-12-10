@@ -12,6 +12,8 @@ import { VideoTypeModule } from './modules/videotype/videotype.module';
 import { AvatarModule } from './modules/avatar/avatar.module';
 import { ProductsModule } from './modules/products/products.module';
 import { HookModule } from './modules/hooks/hooks.module';
+import { TemplateModule } from './modules/templates/template.module';
+// import { VeoModule } from './modules/veo_videos/veo_module';
 
 @Module({
   imports: [
@@ -37,6 +39,8 @@ import { HookModule } from './modules/hooks/hooks.module';
     AvatarModule,
     ProductsModule,
     HookModule,
+    // VeoModule
+    TemplateModule,
   ],
   // controllers: [CommonController],
   // providers: [CommonService],

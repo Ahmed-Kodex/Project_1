@@ -15,7 +15,9 @@ export class HooksSeeder {
     ];
 
     for (const hook of hooksData) {
-      const existing = await hookRepository.findOne({ where: { text: hook.text } });
+      const existing = await hookRepository.findOne({
+        where: { text: hook.text },
+      });
       if (!existing) {
         await hookRepository.save(hook);
       }

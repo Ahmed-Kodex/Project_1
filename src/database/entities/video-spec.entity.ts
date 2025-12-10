@@ -5,7 +5,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
-  JoinColumn
+  JoinColumn,
 } from 'typeorm';
 import { User } from './user.entity';
 
@@ -13,19 +13,19 @@ import { User } from './user.entity';
 export class VideoSpec {
   @PrimaryGeneratedColumn()
   id: number;
- 
+
   @Column({ type: 'int', nullable: true })
   userId: number;
 
   @ManyToOne(() => User, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn({ name: 'userId' })
   user: User;
- 
+
   @Column({ type: 'int' })
   length: number;
 
   @Column({ type: 'varchar', length: 255 })
-  goal: string; 
+  goal: string;
 
   @CreateDateColumn({ type: 'timestamp', precision: 0 })
   createdAt: Date;

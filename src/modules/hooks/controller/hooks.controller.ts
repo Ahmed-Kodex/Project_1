@@ -1,5 +1,18 @@
-import { Controller, Get, Post, Body, UseGuards, Request, Query } from '@nestjs/common';
-import { ApiTags, ApiBearerAuth, ApiOperation, ApiConsumes } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  UseGuards,
+  Request,
+  Query,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiBearerAuth,
+  ApiOperation,
+  ApiConsumes,
+} from '@nestjs/swagger';
 import { HookService } from '../service/hooks.service';
 import { JwtAuthGuard } from 'src/modules/auth/guard/jwt.guard';
 import { CreateHookDto, paginatedHookDto } from '../dto/create-hook.dto';
@@ -7,7 +20,7 @@ import { CreateHookDto, paginatedHookDto } from '../dto/create-hook.dto';
 @ApiTags('Hooks')
 @Controller('hooks')
 export class HookController {
-  constructor(private readonly hookService: HookService) { }
+  constructor(private readonly hookService: HookService) {}
 
   @Get()
   @UseGuards(JwtAuthGuard)

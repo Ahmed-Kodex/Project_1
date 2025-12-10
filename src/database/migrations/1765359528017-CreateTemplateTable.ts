@@ -1,14 +1,11 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class CreateVideoSpecsTable1765262905779 implements MigrationInterface {
-  name = 'CreateVideoSpecsTable1765262905779';
+export class CreateTemplateTable1765359528017 implements MigrationInterface {
+  name = 'CreateTemplateTable1765359528017';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `CREATE TABLE \`video_type\` (\`id\` int NOT NULL AUTO_INCREMENT, \`videoName\` varchar(255) NOT NULL, \`description\` varchar(255) NOT NULL, \`logo\` varchar(255) NOT NULL, \`createdAt\` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(6), \`updatedAt\` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6), PRIMARY KEY (\`id\`)) ENGINE=InnoDB`,
-    );
-    await queryRunner.query(
-      `CREATE TABLE \`video_specs\` (\`id\` int NOT NULL AUTO_INCREMENT, \`userId\` int NULL, \`length\` int NOT NULL, \`goal\` varchar(255) NOT NULL, \`createdAt\` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(6), \`updatedAt\` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6), PRIMARY KEY (\`id\`)) ENGINE=InnoDB`,
+      `CREATE TABLE \`templates\` (\`id\` int NOT NULL AUTO_INCREMENT, \`thumbnail\` varchar(255) NOT NULL, \`img_path\` varchar(255) NOT NULL, \`time_length\` int NOT NULL, \`type\` varchar(100) NOT NULL DEFAULT 'Realistic Cinematic', \`created_at\` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6), \`updated_at\` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6), \`deleted_at\` timestamp(6) NULL, PRIMARY KEY (\`id\`)) ENGINE=InnoDB`,
     );
     await queryRunner.query(
       `ALTER TABLE \`user\` CHANGE \`password\` \`password\` varchar(255) NULL`,
@@ -45,6 +42,18 @@ export class CreateVideoSpecsTable1765262905779 implements MigrationInterface {
     );
     await queryRunner.query(
       `ALTER TABLE \`brands\` CHANGE \`userId\` \`userId\` int NULL`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE \`video_type\` DROP FOREIGN KEY \`FK_ee1590a55dfd4e44ed6e1cb8be2\``,
+    );
+    await queryRunner.query(
+      `ALTER TABLE \`video_type\` CHANGE \`userId\` \`userId\` int NULL`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE \`video_type\` CHANGE \`createdAt\` \`createdAt\` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(6)`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE \`video_type\` CHANGE \`updatedAt\` \`updatedAt\` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6)`,
     );
     await queryRunner.query(
       `ALTER TABLE \`products\` DROP FOREIGN KEY \`FK_99d90c2a483d79f3b627fb1d5e9\``,
@@ -92,7 +101,22 @@ export class CreateVideoSpecsTable1765262905779 implements MigrationInterface {
       `ALTER TABLE \`hooks\` CHANGE \`updatedAt\` \`updatedAt\` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6)`,
     );
     await queryRunner.query(
+      `ALTER TABLE \`video_specs\` DROP FOREIGN KEY \`FK_fe4a418c7d14b17e184a9cd125f\``,
+    );
+    await queryRunner.query(
+      `ALTER TABLE \`video_specs\` CHANGE \`userId\` \`userId\` int NULL`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE \`video_specs\` CHANGE \`createdAt\` \`createdAt\` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(6)`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE \`video_specs\` CHANGE \`updatedAt\` \`updatedAt\` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6)`,
+    );
+    await queryRunner.query(
       `ALTER TABLE \`brands\` ADD CONSTRAINT \`FK_2bd14c9ce10e19d290d3f6818d9\` FOREIGN KEY (\`userId\`) REFERENCES \`user\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE \`video_type\` ADD CONSTRAINT \`FK_ee1590a55dfd4e44ed6e1cb8be2\` FOREIGN KEY (\`userId\`) REFERENCES \`user\`(\`id\`) ON DELETE SET NULL ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
       `ALTER TABLE \`products\` ADD CONSTRAINT \`FK_99d90c2a483d79f3b627fb1d5e9\` FOREIGN KEY (\`userId\`) REFERENCES \`user\`(\`id\`) ON DELETE SET NULL ON UPDATE NO ACTION`,
@@ -128,7 +152,22 @@ export class CreateVideoSpecsTable1765262905779 implements MigrationInterface {
       `ALTER TABLE \`products\` DROP FOREIGN KEY \`FK_99d90c2a483d79f3b627fb1d5e9\``,
     );
     await queryRunner.query(
+      `ALTER TABLE \`video_type\` DROP FOREIGN KEY \`FK_ee1590a55dfd4e44ed6e1cb8be2\``,
+    );
+    await queryRunner.query(
       `ALTER TABLE \`brands\` DROP FOREIGN KEY \`FK_2bd14c9ce10e19d290d3f6818d9\``,
+    );
+    await queryRunner.query(
+      `ALTER TABLE \`video_specs\` CHANGE \`updatedAt\` \`updatedAt\` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP()`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE \`video_specs\` CHANGE \`createdAt\` \`createdAt\` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP()`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE \`video_specs\` CHANGE \`userId\` \`userId\` int NULL DEFAULT 'NULL'`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE \`video_specs\` ADD CONSTRAINT \`FK_fe4a418c7d14b17e184a9cd125f\` FOREIGN KEY (\`userId\`) REFERENCES \`user\`(\`id\`) ON DELETE SET NULL ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
       `ALTER TABLE \`hooks\` CHANGE \`updatedAt\` \`updatedAt\` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP()`,
@@ -176,6 +215,18 @@ export class CreateVideoSpecsTable1765262905779 implements MigrationInterface {
       `ALTER TABLE \`products\` ADD CONSTRAINT \`FK_99d90c2a483d79f3b627fb1d5e9\` FOREIGN KEY (\`userId\`) REFERENCES \`user\`(\`id\`) ON DELETE SET NULL ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
+      `ALTER TABLE \`video_type\` CHANGE \`updatedAt\` \`updatedAt\` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP()`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE \`video_type\` CHANGE \`createdAt\` \`createdAt\` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP()`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE \`video_type\` CHANGE \`userId\` \`userId\` int NULL DEFAULT 'NULL'`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE \`video_type\` ADD CONSTRAINT \`FK_ee1590a55dfd4e44ed6e1cb8be2\` FOREIGN KEY (\`userId\`) REFERENCES \`user\`(\`id\`) ON DELETE SET NULL ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
       `ALTER TABLE \`brands\` CHANGE \`userId\` \`userId\` int NULL DEFAULT 'NULL'`,
     );
     await queryRunner.query(
@@ -211,7 +262,6 @@ export class CreateVideoSpecsTable1765262905779 implements MigrationInterface {
     await queryRunner.query(
       `ALTER TABLE \`user\` CHANGE \`password\` \`password\` varchar(255) NULL DEFAULT 'NULL'`,
     );
-    await queryRunner.query(`DROP TABLE \`video_specs\``);
-    await queryRunner.query(`DROP TABLE \`video_type\``);
+    await queryRunner.query(`DROP TABLE \`templates\``);
   }
 }
