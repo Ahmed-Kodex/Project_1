@@ -13,6 +13,7 @@ import { AvatarModule } from './modules/avatar/avatar.module';
 import { ProductsModule } from './modules/products/products.module';
 import { HookModule } from './modules/hooks/hooks.module';
 import { TemplateModule } from './modules/templates/template.module';
+import { ScriptModule } from './modules/ScriptAPi/scriptApi.module';
 // import { VeoModule } from './modules/veo_videos/veo_module';
 
 @Module({
@@ -39,7 +40,7 @@ import { TemplateModule } from './modules/templates/template.module';
     AvatarModule,
     ProductsModule,
     HookModule,
-    // VeoModule
+    ScriptModule,
     TemplateModule,
   ],
   // controllers: [CommonController],

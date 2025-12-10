@@ -16,6 +16,12 @@ import {
 import { HookService } from '../service/hooks.service';
 import { JwtAuthGuard } from 'src/modules/auth/guard/jwt.guard';
 import { CreateHookDto, paginatedHookDto } from '../dto/create-hook.dto';
+import { User } from '../../../database/entities/user.entity'; // adjust path
+
+// Inline interface for type-safe request
+interface AuthenticatedRequest {
+  user: User;
+}
 
 @ApiTags('Hooks')
 @Controller('hooks')
@@ -35,8 +41,11 @@ export class HookController {
   @Post('create')
   @ApiConsumes('application/x-www-form-urlencoded')
   @ApiOperation({ summary: 'Create a new hook' })
-  async createHook(@Body() dto: CreateHookDto, @Request() req) {
-    const user = req.user;
-    return this.hookService.create(dto, user);
+  async createHook(
+    @Body() dto: CreateHookDto,
+    @Request() req: AuthenticatedRequest, // <- type-safe request
+  ) {
+    const user = req.user; // strongly typed as User
+    return this.hookService.create(dto, user); // no more ESLint warnings
   }
 }

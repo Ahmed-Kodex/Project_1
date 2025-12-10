@@ -19,7 +19,7 @@ export default new DataSource({
   username: process.env.DB_USERNAME || 'root',
   password: process.env.DB_PASSWORD || '',
   database: process.env.DB_DATABASE || 'nest_auth_otp',
-  entities: [User, Otp, Brand, VideoType, Product, Avatar, Hook, VideoSpec, Template],
+  entities: [User, Otp, Brand, VideoType, Product, Avatar, Hook, VideoSpec, Template, VideoSpec],
   migrations: ['src/database/migrations/*.ts'],
   synchronize: false,
 }); 

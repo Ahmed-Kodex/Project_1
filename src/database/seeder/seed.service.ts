@@ -3,6 +3,7 @@ import { VideoTypeSeeder } from './videotype.seeder';
 import { AvatarSeeder } from './avatar.seeder';
 import { HooksSeeder } from './hook.seeder';
 import { TemplateSeeder } from './template.seeder';
+import { VideoSpecSeeder } from './videospecs.seeder';
 
 @Injectable()
 export class SeedService {
@@ -11,6 +12,7 @@ export class SeedService {
     private readonly avatarSeeder: AvatarSeeder,
     private readonly hooksSeeder: HooksSeeder,
     private readonly templateSeeder: TemplateSeeder,
+    private readonly videospecsSeeder: VideoSpecSeeder,
   ) {}
   async runAll() {
     console.log('🚀 Starting database seeding...');
@@ -18,6 +20,7 @@ export class SeedService {
     await this.avatarSeeder.run();
     await this.hooksSeeder.run();
     await this.templateSeeder.run();
+    await this.videospecsSeeder.run();
     console.log('🎉 Seeding completed!');
   }
 }

@@ -32,6 +32,10 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('siluetAi', app, document, {
     customSiteTitle: 'Siluet Ai',
+    swaggerOptions: {
+      docExpansion: 'none',
+      deepLinking: false,
+    },
   });
   // swagger
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));

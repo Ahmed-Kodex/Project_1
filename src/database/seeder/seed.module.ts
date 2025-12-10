@@ -8,10 +8,17 @@ import { Avatar } from '../entities/avatar.entity';
 import { AvatarSeeder } from './avatar.seeder';
 import { HooksSeeder } from './hook.seeder';
 import { TemplateSeeder } from './template.seeder';
+import { VideoSpecSeeder } from './videospecs.seeder';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([VideoType, Avatar, HooksSeeder, TemplateSeeder]),
+    TypeOrmModule.forFeature([
+      VideoType,
+      Avatar,
+      HooksSeeder,
+      TemplateSeeder,
+      VideoSpecSeeder,
+    ]),
   ],
   providers: [
     SeedService,
@@ -19,6 +26,7 @@ import { TemplateSeeder } from './template.seeder';
     AvatarSeeder,
     HooksSeeder,
     TemplateSeeder,
+    VideoSpecSeeder,
   ],
   exports: [SeedService],
 })
