@@ -9,6 +9,8 @@ import { Avatar } from 'src/database/entities/avatar.entity';
 import { Hook } from 'src/database/entities/hooks.entity';
 import { VideoSpec } from 'src/database/entities/video-spec.entity';
 import { Template } from 'src/database/entities/template.entity';
+import { Audience } from 'src/database/entities/audience.entity';
+import { Project } from 'src/database/entities/project.entity';
 
 dotenv.config();
 
@@ -19,7 +21,7 @@ export default new DataSource({
   username: process.env.DB_USERNAME || 'root',
   password: process.env.DB_PASSWORD || '',
   database: process.env.DB_DATABASE || 'nest_auth_otp',
-  entities: [User, Otp, Brand, VideoType, Product, Avatar, Hook, VideoSpec, Template, VideoSpec],
+  entities: [User, Otp, Brand, VideoType, Product, Avatar, Hook, VideoSpec, Template, VideoSpec, Audience, Project],
   migrations: ['src/database/migrations/*.ts'],
   synchronize: false,
 }); 

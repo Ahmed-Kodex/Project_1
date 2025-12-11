@@ -20,12 +20,10 @@ export class ScriptService {
     const hookRepo = this.dataSource.getRepository(Hook);
     const videoSpecRepo = this.dataSource.getRepository(VideoSpec);
 
+    // Fetch entities ONLY if ID is provided AND belongs to logged-in user
     const brand = dto.brand_id
       ? await brandRepo.findOne({
-          where: {
-            id: dto.brand_id,
-            user: { id: user.id },
-          },
+          where: { id: dto.brand_id, user: { id: user.id } },
           relations: ['user'],
         })
       : null;
@@ -43,7 +41,9 @@ export class ScriptService {
       : null;
 
     const hook = dto.hook_id
-      ? await hookRepo.findOne({ where: { id: dto.hook_id, userId: user.id } })
+      ? await hookRepo.findOne({
+          where: { id: dto.hook_id, userId: user.id },
+        })
       : null;
 
     const videoSpec = dto.video_spec_id
@@ -51,6 +51,17 @@ export class ScriptService {
           where: { id: dto.video_spec_id, userId: user.id },
         })
       : null;
+
+    const atLeastOneValid = brand || product || avatar || hook || videoSpec;
+
+    if (!atLeastOneValid) {
+      return {
+        status: 'error',
+        message:
+          'At least one valid ID is required, and it must belong to the logged-in user.',
+        statusCode: 400,
+      };
+    }
 
     const promptParts: string[] = [];
 
@@ -62,7 +73,6 @@ export class ScriptService {
       promptParts.push(
         `Video Goal: ${videoSpec.goal}, Length: ${videoSpec.length}s`,
       );
-
     // const prompt = promptParts.length
     //   ? `Generate a video script with the following details:\n${promptParts.join('\n')}`
     //   : 'Generate a generic video script.';
@@ -75,6 +85,8 @@ export class ScriptService {
     //     temperature: 0.7,
     // });
     // const script = completion.choices[0].message?.content || 'Script could not be generated.';
+
+    // Placeholder script (no GPT yet)
     const script = 'This is a placeholder script for testing purposes.';
 
     return {

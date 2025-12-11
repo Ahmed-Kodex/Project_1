@@ -14,6 +14,8 @@ import { ProductsModule } from './modules/products/products.module';
 import { HookModule } from './modules/hooks/hooks.module';
 import { TemplateModule } from './modules/templates/template.module';
 import { ScriptModule } from './modules/ScriptAPi/scriptApi.module';
+import { AudienceModule } from './modules/audi/audience.module';
+import { ProjectModule } from './modules/Projects/project.module';
 // import { VeoModule } from './modules/veo_videos/veo_module';
 
 @Module({
@@ -42,6 +44,8 @@ import { ScriptModule } from './modules/ScriptAPi/scriptApi.module';
     HookModule,
     ScriptModule,
     TemplateModule,
+    AudienceModule,
+    ProjectModule,
   ],
   // controllers: [CommonController],
   // providers: [CommonService],

@@ -19,11 +19,9 @@ export class TemplateService {
       type = TemplateType.REALISTIC_CINEMATIC,
     } = dto;
     const skip = (page - 1) * limit;
-
     const where: FindOptionsWhere<Template> = {
       type,
     };
-
     const [templates, total] = await this.templateRepo.findAndCount({
       where,
       skip,
